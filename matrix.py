@@ -1,4 +1,4 @@
-from random import uniform, random
+from random import random, randint
 
 class Matrix:
     ''' Classe que representa uma matriz '''
@@ -27,7 +27,7 @@ class Matrix:
         
         for row in self.matrix:
             for i in range(len(row)):
-                row[i] = uniform(-1, 1)
+                row[i] = (random() * 2) - 1
     
     def mutate(self) -> None:
         ''' Cria mutações nos valores da matriz '''
@@ -39,8 +39,20 @@ class Matrix:
                 if random() > mutation_rate:
                     continue
                 
-                row[i] = max(-1, (min(1, row[i] + uniform(-1, 1))))
+                row[i] += (random() * 2) - 1
+                row[i] = max(-1, (min(1, row[i])))
     
+    def clone(self):
+        ''' Cria uma cópia da matriz '''
+        
+        result = Matrix(self.rows, self.cols)
+        
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result.matrix[i][j] = self.matrix[i][j]
+        
+        return result
+        
     def to_array(self) -> list[float]:
         ''' Transforma a matriz em um array '''
         
@@ -55,6 +67,27 @@ class Matrix:
         for i, value in enumerate(array):
             result.matrix[i][0] = value          
         
+        return result
+    
+    @staticmethod
+    def crossover(a: 'Matrix', b: 'Matrix') -> 'Matrix':
+        ''' Cria um cruzamento entre duas matrizes '''
+        
+        if a.rows != b.rows or a.cols != b.cols:
+            raise ValueError('Matrices must have the same size')
+        
+        rand_row = randint(0, a.rows - 1)
+        rand_col = randint(0, a.cols - 1)
+        
+        result: Matrix = Matrix(a.rows, a.cols)
+        
+        for i in range(len(result.matrix)):
+            for j in range(len(result.matrix[i])):
+                if i < rand_row or (i == rand_row and j <= rand_col):
+                    result.matrix[i][j] = a.matrix[i][j]
+                else:
+                    result.matrix[i][j] = b.matrix[i][j]
+                
         return result
     
     @staticmethod
@@ -78,19 +111,19 @@ class Matrix:
         
         max_size = max([len(str(i)) for i in self.to_array()])
         
-        string = ''
+        result = ''
         
         for i, row in enumerate(self.matrix):
-            string += '['
+            result += '['
             
             for j, item in enumerate(row):
                 space = 0 if j == 0 else 1
                 
-                string += str(item).rjust(max_size + space)
+                result += str(item).rjust(max_size + space)
 
-            string += ']'
+            result += ']'
         
             if i + 1 != len(self.matrix):    
-                string += '\n'
+                result += '\n'
         
-        return string
+        return result

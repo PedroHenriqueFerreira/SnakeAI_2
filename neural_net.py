@@ -48,10 +48,54 @@ class NeuralNet:
     
     def mutate(self):
         ''' Cria mutações nos pesos da rede neural '''
-        
+                
         for wheight in self.wheights:
             wheight.mutate()
+            
+    def clone(self):
+        ''' Cria uma cópia da rede neural '''
         
+        result = NeuralNet(self.input_size, self.hidden_sizes, self.output_size)
+        
+        for i, wheight in enumerate(self.wheights):
+            result.wheights[i] = wheight.clone()
+        
+        return result
+    
+    def load(self, wheights: list[Matrix]) -> None:
+        ''' Carrega os pesos da rede neural '''
+        
+        if len(wheights) != len(self.wheights):
+            raise ValueError('Wheights must have the same size')
+        
+        for i, wheight in enumerate(wheights):
+            if wheight.rows != self.wheights[i].rows or wheight.cols != self.wheights[i].cols:
+                raise ValueError('Wheights must have the same size')
+            
+            self.wheights[i] = wheight.clone()
+    
+    def save(self) -> list[Matrix]:
+        ''' Salva os pesos da rede neural '''
+        
+        return [wheight.clone() for wheight in self.wheights]
+    
+    @staticmethod
+    def crossover(a: 'NeuralNet', b: 'NeuralNet') -> 'NeuralNet':
+        ''' Cria um cruzamento entre duas redes neurais '''
+        
+        a_sizes = [a.input_size] + a.hidden_sizes + [a.output_size]
+        b_sizes = [b.input_size] + b.hidden_sizes + [b.output_size]
+        
+        if a_sizes != b_sizes:
+            raise ValueError('Neural networks must have the same sizes')
+        
+        result = NeuralNet(a.input_size, a.hidden_sizes, a.output_size)
+        
+        for i in range(len(result.wheights)):
+            result.wheights[i] = Matrix.crossover(a.wheights[i], b.wheights[i])
+            
+        return result
+
 nn = NeuralNet(6, [5, 5], 4)
 
-print(nn.output([1] * 6))
+print(f'{nn!r}')
