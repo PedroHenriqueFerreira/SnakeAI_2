@@ -10,6 +10,6 @@ root = Tk()
 canvas = Canvas(root, GAME_SIZE)
 canvas.pack()
 
-Game(canvas)
+Game(canvas, GAME_GRID, LIVES, SPEED, IS_AI)
 
 root.mainloop()

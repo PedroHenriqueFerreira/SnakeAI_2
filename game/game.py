@@ -1,5 +1,7 @@
 from tkinter import Event
 
+from ai.neural_network import NeuralNetwork
+
 from ui.canvas import Canvas
 
 from game.food import Food
@@ -8,7 +10,15 @@ from game.snake import Snake
 class Game:
     ''' Classe que representa o jogo '''
     
-    def __init__(self, canvas: Canvas, grid: int, lives: int, speed: int, is_ai: bool):
+    def __init__(
+        self, 
+        canvas: Canvas, 
+        grid: int, 
+        lives: int, 
+        speed: int, 
+        is_ai: bool, 
+        nn: NeuralNetwork | None = None
+    ):
         self.canvas = canvas
         
         self.speed = speed
@@ -20,6 +30,8 @@ class Game:
         self.curr_energy = grid ** 2
         self.score = 0
         self.is_dead = True
+        
+        self.brain = nn
 
         self.canvas.draw_bg(grid)
         self.canvas.draw_message('Jogar Snake')
@@ -30,9 +42,24 @@ class Game:
         if not is_ai:
             self.canvas.bind('<Key>', self.control)
             self.canvas.focus_set()
-            
+    
+    def ai_control(self, output: list[float]) -> None:
+        ''' Controla a cobrinha pelo algoritmo '''
+        
+        if len(output) != 4:
+            raise ValueError('Output must have 4 values')
+        
+        if output[0] > 0:
+            self.snake.set_direction('up')
+        elif output[1] > 0:
+            self.snake.set_direction('right')
+        elif output[2] > 0:
+            self.snake.set_direction('down')
+        elif output[3] > 0:
+            self.snake.set_direction('left')
+    
     def control(self, event: 'Event[Canvas]') -> None:
-        ''' Controla a cobrinha '''
+        ''' Controla a cobrinha pelo teclado '''
         
         self.snake.set_direction(event.keysym.lower())
     
@@ -98,3 +125,30 @@ class Game:
             self.score = curr_score
             
         self.canvas.after(self.speed, self.update)
+        
+    def get_data(self):
+        *snake_body, snake_head = self.snake.coords
+        
+        food_data: list[int] = []
+        vision_data: list[int] = []
+        
+        for i in range(2):
+            if self.food.coord[i] < snake_head[i]:
+                food_data.append(1)
+            elif self.food.coord[i] > snake_head[i]:
+                food_data.append(-1)
+            else:
+                food_data.append(0)
+        
+        up = [snake_head[0] - 1, snake_head[1]]
+        right = [snake_head[0], snake_head[1] + 1]
+        down = [snake_head[0] + 1, snake_head[1]]
+        left = [snake_head[0], snake_head[1] - 1]
+        
+        for coord in [up, right, down, left]:
+            if coord in snake_body or -1 in coord or self.grid in coord:
+                vision_data.append(1)
+            else:
+                vision_data.append(0)
+        
+        return food_data + vision_data

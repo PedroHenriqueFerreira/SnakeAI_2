@@ -1,6 +1,9 @@
+from typing import TYPE_CHECKING
 from tkinter import Misc, Canvas as BaseCanvas
-
 from settings import *
+
+if TYPE_CHECKING:
+    from game.game import Game
 
 class Canvas(BaseCanvas):
     def __init__(self, parent: Misc, size: int):
@@ -63,3 +66,75 @@ class Canvas(BaseCanvas):
         
     def undraw_message(self) -> None:
         self.delete('message')
+    
+    def draw_line( self, origin: tuple[int, int], destiny: tuple[int, int], size: int, color: str, tags: str) -> int:
+        xi, yi = origin
+        xf, yf = destiny
+        
+        return self.create_line(
+            xi, yi,
+            xf, yf,
+            width=size,
+            fill=color,
+            tags=tags
+        )
+    
+    def draw_polygon(self, coords: list[tuple[int, int]], width: int, color: str, tags: str) -> int:
+        return self.create_polygon(
+            *[pos for coord in coords for pos in coord],
+            fill='',
+            width=width,
+            outline=color,
+            tags=tags
+        )
+    
+    def draw_chart(self, values: list[int]) -> None:
+        size = self.winfo_reqwidth()
+        
+        if len(self.find_withtag('line')) == 0:
+            block_size = int(size / CHART_GRID)
+
+            for i in range(CHART_GRID + 1):
+                pos = i * block_size
+
+                self.draw_line((0, pos), (size, pos), LINE_WIDTH, COLORS['gray'], 'line')
+                self.draw_line((pos, 0), (pos, size), LINE_WIDTH, COLORS['gray'], 'line')
+
+        if len(values) == 0 or max(values) == 0:
+            return
+        
+        coords: list[tuple[int, int]] = []
+        
+        coords.append((-LINE_WIDTH, size + LINE_WIDTH))
+    
+        if len(values) > 1:
+            for i, value in enumerate(values):
+                x = int(i * (size / (len(values) - 1)))
+                y = int(size - (value / max(values)) * size)
+
+                if x == 0:
+                    coords.append((x - LINE_WIDTH, y))
+                    
+                coords.append((x, y))
+
+                if x == size:
+                    coords.append((x + LINE_WIDTH, y))
+        else:
+            coords.append((size, 0))
+
+        coords.append((size + LINE_WIDTH, size + LINE_WIDTH))
+
+        self.delete('chart')
+        self.draw_polygon(coords, LINE_WIDTH, COLORS['red'], 'chart')
+    
+    def draw_game(self, game: 'Game'):
+        if len(self.find_withtag('bg')) == 0:
+            self.draw_bg()
+        
+        self.delete('food')
+        if game.food.coord is not None:
+            self.draw_food(game.food.coord, GAME_GRID)
+        
+        self.delete('snake')
+        for snake_coord in game.snake.coords:
+            self.draw_snake(snake_coord, GAME_GRID)
