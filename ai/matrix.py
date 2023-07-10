@@ -59,6 +59,18 @@ class Matrix:
         return [item for row in self.matrix for item in row]
     
     @staticmethod
+    def load(matrix: list[list[float]]) -> 'Matrix':
+        ''' Carrega uma matriz '''
+        
+        result = Matrix(len(matrix), len(matrix[0]))
+        
+        for i in range(result.rows):
+            for j in range(result.cols):
+                result.matrix[i][j] = matrix[i][j]
+        
+        return result
+    
+    @staticmethod
     def from_array(array: list[float]) -> 'Matrix':
         ''' Transforma um array em uma matriz '''
         

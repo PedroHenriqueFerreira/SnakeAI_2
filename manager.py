@@ -12,7 +12,7 @@ class Manager:
         
         nn_canvas: Canvas,
         chart_canvas: Canvas,
-        game_canvas: Canvas,
+        best_game_canvas: Canvas,
         
         generation_label: Label,
         record_label: Label,
@@ -23,7 +23,7 @@ class Manager:
 
         self.chart_canvas = chart_canvas
         self.nn_canvas = nn_canvas
-        self.game_canvas = game_canvas
+        self.best_game_canvas = best_game_canvas
 
         self.record_label = record_label
         self.score_label = score_label
@@ -70,7 +70,7 @@ class Manager:
             if curr_best_game.is_dead or curr_score > best_score:
                 curr_best_game = game
 
-        self.game_canvas.draw_game(curr_best_game)
+        self.best_game_canvas.draw_game(curr_best_game)
         # self.nn_canvas.draw_neural_network(curr_best_game.brain)
         
         best_game = max(self.games, key=lambda game: game.score)
@@ -96,10 +96,21 @@ class Manager:
             for game in self.games:
                 game.reset()
 
-        self.game_canvas.after(SPEED, self.update)
+        self.best_game_canvas.after(SPEED, self.update)
 
     def save_data(self):
-        sample = [game.brain.wheights for game in self.games[0:SAMPLE_SIZE] if game.brain is not None]
+        sample: list[list[list[list[float]]]] = []
+        
+        for game in self.games[0:SAMPLE_SIZE]:
+            if game.brain is None:
+                continue
+            
+            wheights: list[list[list[float]]] = []
+            
+            for weight in game.brain.wheights:
+                wheights.append(weight.matrix)
+            
+            sample.append(wheights)
 
         data = {
             'sample': sample,
@@ -151,5 +162,5 @@ class Manager:
             if game.brain is None:
                 continue
             
-            game.brain.load(brain.wheights)
+            game.brain.load([wheight.matrix for wheight in brain.wheights])
             game.brain.mutate()

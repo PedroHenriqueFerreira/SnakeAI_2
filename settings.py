@@ -21,11 +21,11 @@ NEURON_SIZE = 25
 CHART_SIZE = 300
 CHART_GRID = 10
 
-PADDING = 10
+PADDING = 8
 
 LINE_WIDTH = 2
 
-SPEED = 100
+SPEED = 10
 LIVES = 3
 IS_AI = True
 
@@ -33,7 +33,7 @@ INPUT_SIZE = 6
 HIDDEN_SIZES = [5, 5]
 OUTPUT_SIZE = 4
 
-MESSAGE_FONT = ('Minecraft', int(GAME_SIZE / GAME_GRID))
+MESSAGE_FONT = ('Minecraft', int(GAME_SIZE / 10))
 TEXT_FONT = ('Minecraft', 15)
 
 FILE_PATH = 'data'

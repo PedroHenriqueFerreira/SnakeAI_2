@@ -129,7 +129,7 @@ class Canvas(BaseCanvas):
     
     def draw_game(self, game: 'Game'):
         if len(self.find_withtag('bg')) == 0:
-            self.draw_bg()
+            self.draw_bg(GAME_GRID)
         
         self.delete('food')
         if game.food.coord is not None:

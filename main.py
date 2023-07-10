@@ -31,13 +31,13 @@ for i, text in enumerate([GENERATION_TEXT, RECORD_TEXT, SCORE_TEXT, ALIVE_TEXT])
 body = Frame(main)
 body.grid(row=1, column=0, padx=PADDING, pady=PADDING)
 
-games_frame = Frame(body)
-games_frame.grid(row=0, column=0, padx=PADDING, pady=PADDING)
+left_frame = Frame(body)
+left_frame.grid(row=0, column=0)
 games: list[Game] = []
 
 for i in range(GAMES_ROWS):
     for j in range(GAMES_COLS):
-        game_canvas = Canvas(games_frame, GAME_SIZE)
+        game_canvas = Canvas(left_frame, GAME_SIZE)
         game_canvas.grid(row=i, column=j, padx=PADDING / 2, pady=PADDING / 2)
         
         nn = NeuralNetwork(INPUT_SIZE, HIDDEN_SIZES, OUTPUT_SIZE)
@@ -45,19 +45,19 @@ for i in range(GAMES_ROWS):
         
         games.append(game)
         
-canvas_frame = Frame(body)
-canvas_frame.grid(row=0, column=1, padx=PADDING, pady=PADDING)
+right_frame = Frame(body)
+right_frame.grid(row=0, column=1)
 
-best_game_canvas = Canvas(canvas_frame, BEST_GAME_SIZE)
+best_game_canvas = Canvas(right_frame, BEST_GAME_SIZE)
 best_game_canvas.grid(row=0, column=0, padx=PADDING, pady=PADDING)
 
-chart_canvas = Canvas(canvas_frame, CHART_SIZE)
+chart_canvas = Canvas(right_frame, CHART_SIZE)
 chart_canvas.grid(row=1, column=0, padx=PADDING, pady=PADDING)
 
-nn_canvas = Canvas(canvas_frame, NEURAL_NETWORK_SIZE)
+nn_canvas = Canvas(right_frame, NEURAL_NETWORK_SIZE)
 nn_canvas.grid(row=2, column=0, padx=PADDING, pady=PADDING)
 
-Manager(games, nn_canvas, chart_canvas, game_canvas, *labels)
+Manager(games, nn_canvas, chart_canvas, best_game_canvas, *labels)
 
 win_width = win.winfo_screenwidth()
 win_height = win.winfo_screenheight()

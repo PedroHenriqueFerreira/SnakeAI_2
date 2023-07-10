@@ -62,13 +62,15 @@ class NeuralNetwork:
         
         return result
     
-    def load(self, wheights: list[Matrix]) -> None:
+    def load(self, wheights: list[list[list[float]]]) -> None:
         ''' Carrega os pesos da rede neural '''
         
         if len(wheights) != len(self.wheights):
             raise ValueError('Wheights must have the same size')
         
-        for i, wheight in enumerate(wheights):
+        for i in range(len(wheights)):
+            wheight = Matrix.load(wheights[i])
+            
             if wheight.rows != self.wheights[i].rows or wheight.cols != self.wheights[i].cols:
                 raise ValueError('Wheights must have the same size')
             
@@ -95,7 +97,3 @@ class NeuralNetwork:
             result.wheights[i] = Matrix.crossover(a.wheights[i], b.wheights[i])
             
         return result
-
-nn = NeuralNetwork(6, [5, 5], 4)
-
-print(f'{nn!r}')
