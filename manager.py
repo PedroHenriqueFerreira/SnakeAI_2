@@ -159,6 +159,8 @@ class Manager:
         
         sample = self.games[0:SAMPLE_SIZE]
         
+        crossover_rate = random() / 2
+        
         for i, game in enumerate(self.games[SAMPLE_SIZE:]):
             index = i % SAMPLE_SIZE
             
@@ -167,7 +169,7 @@ class Manager:
             if brain is None or game.brain is None:
                 continue
             
-            if 0.5 < random():
+            if random() < crossover_rate:
                 a = choice(sample)
                 b = choice(sample)
                 
@@ -175,5 +177,5 @@ class Manager:
                     continue
                 
                 game.brain.crossover(a.brain, b.brain)
-                
-            game.brain.mutate()
+            else:
+                game.brain.mutate()
