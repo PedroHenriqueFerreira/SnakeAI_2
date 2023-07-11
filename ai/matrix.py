@@ -32,7 +32,7 @@ class Matrix:
     def mutate(self) -> None:
         ''' Cria mutações nos valores da matriz '''
         
-        mutation_rate = random()
+        mutation_rate = random() / 2
         
         for row in self.matrix:
             for i in range(len(row)):
@@ -92,8 +92,8 @@ class Matrix:
         
         result: Matrix = Matrix(a.rows, a.cols)
         
-        for i in range(len(result.matrix)):
-            for j in range(len(result.matrix[i])):
+        for i in range(a.rows):
+            for j in range(a.cols):
                 if i < rand_row or (i == rand_row and j <= rand_col):
                     result.matrix[i][j] = a.matrix[i][j]
                 else:

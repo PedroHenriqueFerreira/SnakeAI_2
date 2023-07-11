@@ -1,3 +1,5 @@
+from random import choice, random
+
 from tkinter import Label
 
 from game.game import Game
@@ -155,6 +157,8 @@ class Manager:
     def natural_selection(self):
         ''' Seleção natural '''
         
+        sample = self.games[0:SAMPLE_SIZE]
+        
         for i, game in enumerate(self.games[SAMPLE_SIZE:]):
             index = i % SAMPLE_SIZE
             
@@ -163,5 +167,13 @@ class Manager:
             if brain is None or game.brain is None:
                 continue
             
-            game.brain.load(brain.wheights)
+            if 0.5 < random():
+                a = choice(sample)
+                b = choice(sample)
+                
+                if a.brain is None or b.brain is None:
+                    continue
+                
+                game.brain.crossover(a.brain, b.brain)
+                
             game.brain.mutate()

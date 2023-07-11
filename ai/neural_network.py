@@ -69,19 +69,16 @@ class NeuralNetwork:
         
         return [wheight.clone() for wheight in self.wheights]
 
-    @staticmethod
-    def crossover(a: 'NeuralNetwork', b: 'NeuralNetwork') -> 'NeuralNetwork':
+    def crossover(self, a: 'NeuralNetwork', b: 'NeuralNetwork') -> None:
         ''' Gera um cruzamento entre duas redes neurais '''
+
+        self_sizes = [self.input_size] + self.hidden_sizes + [self.output_size]
 
         a_sizes = [a.input_size] + a.hidden_sizes + [a.output_size]
         b_sizes = [b.input_size] + b.hidden_sizes + [b.output_size]
         
-        if a_sizes != b_sizes:
+        if self_sizes != a_sizes or self_sizes != b_sizes:
             raise ValueError('Neural networks must have the same sizes')
         
-        nn = NeuralNetwork(a.input_size, a.hidden_sizes, a.output_size)
-        
-        for i in range(len(nn.wheights)):
-            nn.wheights[i] = Matrix.crossover(a.wheights[i], b.wheights[i])
-            
-        return nn
+        for i in range(len(self.wheights)):
+            self.wheights[i] = Matrix.crossover(a.wheights[i], b.wheights[i])
