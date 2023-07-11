@@ -15,7 +15,7 @@ class Matrix:
         self.rows += 1
         self.matrix.append([1] * self.cols)
     
-    def relu(self) -> None:
+    def activate(self) -> None:
         ''' Atualiza a matriz com a função de ativação ReLU '''
 
         for row in self.matrix:
@@ -39,8 +39,7 @@ class Matrix:
                 if random() > mutation_rate:
                     continue
                 
-                row[i] += (random() * 2) - 1
-                row[i] = max(-1, (min(1, row[i])))
+                row[i] += max(-1, min(1, (random() * 2) - 1))
     
     def clone(self):
         ''' Cria uma cópia da matriz '''
@@ -85,7 +84,7 @@ class Matrix:
     def crossover(a: 'Matrix', b: 'Matrix') -> 'Matrix':
         ''' Cria um cruzamento entre duas matrizes '''
         
-        if a.rows != b.rows or a.cols != b.cols:
+        if (a.rows, a.cols) != (b.rows, b.cols):
             raise ValueError('Matrices must have the same size')
         
         rand_row = randint(0, a.rows - 1)
@@ -115,27 +114,5 @@ class Matrix:
             for j in range(b.cols):   
                 for k in range(a.cols):
                     result.matrix[i][j] += a.matrix[i][k] * b.matrix[k][j]
-        
-        return result
-    
-    def __str__(self) -> str:
-        ''' Cria uma string para representar a matriz '''
-        
-        max_size = max([len(str(i)) for i in self.to_array()])
-        
-        result = ''
-        
-        for i, row in enumerate(self.matrix):
-            result += '['
-            
-            for j, item in enumerate(row):
-                space = 0 if j == 0 else 1
-                
-                result += str(item).rjust(max_size + space)
-
-            result += ']'
-        
-            if i + 1 != len(self.matrix):    
-                result += '\n'
         
         return result

@@ -10,15 +10,15 @@ from settings import *
 
 win = Tk()
 win.title('SnakeAI')
-win.config(bg=COLORS['black'])
-win.option_add('*background', COLORS['black'])
-win.option_add('*foreground', COLORS['white'])
+win.config(bg=BG_COLORS[0])
+win.option_add('*background', BG_COLORS[0])
+win.option_add('*foreground', TEXT_COLOR)
 
 main = Frame(win)
 main.pack(expand=1)
 
 header = Frame(main)
-header.grid(row=0, column=0, padx=PADDING, pady=PADDING)
+header.grid(row=0, column=0, padx=0, pady=0)
 
 labels: list[Label] = []
 
@@ -29,7 +29,7 @@ for i, text in enumerate([GENERATION_TEXT, RECORD_TEXT, SCORE_TEXT, ALIVE_TEXT])
     labels.append(label)
     
 body = Frame(main)
-body.grid(row=1, column=0, padx=PADDING, pady=PADDING)
+body.grid(row=1, column=0, padx=0, pady=0)
 
 left_frame = Frame(body)
 left_frame.grid(row=0, column=0)
@@ -41,7 +41,7 @@ for i in range(GAMES_ROWS):
         game_canvas.grid(row=i, column=j, padx=PADDING / 2, pady=PADDING / 2)
         
         nn = NeuralNetwork(INPUT_SIZE, HIDDEN_SIZES, OUTPUT_SIZE)
-        game = Game(game_canvas, GAME_GRID, LIVES, SPEED, IS_AI, nn)
+        game = Game(game_canvas, GAME_GRID, LIVES, SPEED, True, nn)
         
         games.append(game)
         
@@ -54,10 +54,7 @@ best_game_canvas.grid(row=0, column=0, padx=PADDING, pady=PADDING)
 chart_canvas = Canvas(right_frame, CHART_SIZE)
 chart_canvas.grid(row=1, column=0, padx=PADDING, pady=PADDING)
 
-nn_canvas = Canvas(right_frame, NEURAL_NETWORK_SIZE)
-nn_canvas.grid(row=2, column=0, padx=PADDING, pady=PADDING)
-
-Manager(games, nn_canvas, chart_canvas, best_game_canvas, *labels)
+Manager(games, chart_canvas, best_game_canvas, *labels)
 
 win_width = win.winfo_screenwidth()
 win_height = win.winfo_screenheight()

@@ -3,14 +3,17 @@ from tkinter import Label
 from game.game import Game
 from ui.canvas import Canvas
 
+from ai.matrix import Matrix
+
 from settings import *
 
 class Manager:
+    ''' Classe que gerencia os jogos '''
+    
     def __init__(
         self,
         games: list[Game],
         
-        nn_canvas: Canvas,
         chart_canvas: Canvas,
         best_game_canvas: Canvas,
         
@@ -22,7 +25,6 @@ class Manager:
         self.games = games
 
         self.chart_canvas = chart_canvas
-        self.nn_canvas = nn_canvas
         self.best_game_canvas = best_game_canvas
 
         self.record_label = record_label
@@ -40,14 +42,9 @@ class Manager:
             
         self.update()
 
-    def transform_output(self, output: list[float]) -> str:
-        if output[0] > 0: return 'up'
-        elif output[1] > 0: return 'right'
-        elif output[2] > 0: return 'down'
-        elif output[3] > 0: return 'left'
-        else: return 'right'
-
     def update(self):
+        ''' Atualiza os dados dos jogos '''
+        
         alive = 0
         
         curr_best_game = self.games[0]
@@ -71,7 +68,6 @@ class Manager:
                 curr_best_game = game
 
         self.best_game_canvas.draw_game(curr_best_game)
-        # self.nn_canvas.draw_neural_network(curr_best_game.brain)
         
         best_game = max(self.games, key=lambda game: game.score)
 
@@ -85,8 +81,8 @@ class Manager:
             record = str(max(self.score_history))
             generation = str(len(self.score_history) - 1)
 
-            self.record_label.config(text=RECORD_TEXT.replace('0', generation))
-            self.generation_label.config(text=GENERATION_TEXT.replace('0', record))
+            self.record_label.config(text=RECORD_TEXT.replace('0', record))
+            self.generation_label.config(text=GENERATION_TEXT.replace('0', generation))
 
             self.sort_games()
             self.save_data()
@@ -99,6 +95,8 @@ class Manager:
         self.best_game_canvas.after(SPEED, self.update)
 
     def save_data(self):
+        ''' Salva os dados dos jogos '''
+        
         sample: list[list[list[list[float]]]] = []
         
         for game in self.games[0:SAMPLE_SIZE]:
@@ -121,6 +119,8 @@ class Manager:
             file.write(str(data))
 
     def load_data(self):
+        ''' Carrega os dados dos jogos '''
+        
         try:
             with open(FILE_PATH, 'r') as file:
                 data = eval(file.read())
@@ -131,7 +131,7 @@ class Manager:
                     if brain is None:
                         continue
                     
-                    brain.load(wheights)
+                    brain.load([Matrix.load(wheight) for wheight in wheights])
                     
                 self.score_history = data['score_history']
                 
@@ -148,19 +148,20 @@ class Manager:
             return
 
     def sort_games(self):
+        ''' Ordena os jogos '''
+        
         self.games.sort(key=lambda snake_game: snake_game.score, reverse=True)
 
     def natural_selection(self):
+        ''' Seleção natural '''
+        
         for i, game in enumerate(self.games[SAMPLE_SIZE:]):
             index = i % SAMPLE_SIZE
             
             brain = self.games[index].brain
 
-            if brain is None:
-                continue
-
-            if game.brain is None:
+            if brain is None or game.brain is None:
                 continue
             
-            game.brain.load([wheight.matrix for wheight in brain.wheights])
+            game.brain.load(brain.wheights)
             game.brain.mutate()
