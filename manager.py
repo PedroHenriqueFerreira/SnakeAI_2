@@ -177,5 +177,5 @@ class Manager:
                     continue
                 
                 game.brain.crossover(a.brain, b.brain)
-            else:
-                game.brain.mutate()
+                
+            game.brain.mutate()
