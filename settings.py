@@ -29,8 +29,8 @@ LINE_WIDTH = 2
 PADDING = 8
 
 # Configuracoes da rede neural
-INPUT_SIZE = 6
-HIDDEN_SIZES = [5, 5]
+INPUT_SIZE = 14
+HIDDEN_SIZES = [9, 9]
 OUTPUT_SIZE = 4
 
 # Configuracoes do texto

@@ -114,7 +114,7 @@ class Game:
         
         if next_coord == self.food.coord:
             self.food.reset()
-            self.curr_energy += self.energy
+            self.curr_energy = self.energy
         else:
             self.snake.remove_coord(self.snake.coords[0])
             self.curr_energy -= 1
@@ -139,14 +139,28 @@ class Game:
                 food_data.append(-1)
             else:
                 food_data.append(0)
+    
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == j == 0:
+                    continue
+                
+                coord = (snake_head[0] + i, snake_head[1] + j)
+                
+                x, y = coord
+                
+                if coord in snake_body or x < 0 or y < 0 or x >= self.grid or y >= self.grid:
+                    vision_data.append(1)
+                else:
+                    vision_data.append(0)
         
-        up = [snake_head[0] - 1, snake_head[1]]
-        right = [snake_head[0], snake_head[1] + 1]
-        down = [snake_head[0] + 1, snake_head[1]]
-        left = [snake_head[0], snake_head[1] - 1]
+        up = (snake_head[0] - 2, snake_head[1])
+        right = (snake_head[0], snake_head[1] + 2)
+        down = (snake_head[0] + 2, snake_head[1])
+        left = (snake_head[0], snake_head[1] - 2)
         
-        for coord in [up, right, down, left]:
-            if coord in snake_body or -1 in coord or self.grid in coord:
+        for coord in (up, right, down, left):
+            if coord in snake_body or x < 0 or y < 0 or x >= self.grid or y >= self.grid:
                 vision_data.append(1)
             else:
                 vision_data.append(0)

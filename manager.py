@@ -159,7 +159,7 @@ class Manager:
         
         sample = self.games[0:SAMPLE_SIZE]
         
-        crossover_rate = random() / 2
+        crossover_rate = random()
         
         for i, game in enumerate(self.games[SAMPLE_SIZE:]):
             index = i % SAMPLE_SIZE
