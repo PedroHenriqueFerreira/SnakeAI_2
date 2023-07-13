@@ -135,9 +135,12 @@ class Game:
         for i in range(2):
             if self.food.coord[i] < snake_head[i]:
                 food_data.append(1)
+                food_data.append(0)
             elif self.food.coord[i] > snake_head[i]:
-                food_data.append(-1)
+                food_data.append(0)
+                food_data.append(1)
             else:
+                food_data.append(0)
                 food_data.append(0)
     
         for i in range(-1, 2):
