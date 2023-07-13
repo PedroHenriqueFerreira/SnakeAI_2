@@ -17,7 +17,7 @@ BEST_GAME_SIZE = 460
 # Configuracoes do jogo
 GAME_SIZE = 150
 GAME_GRID = 20
-SPEED = 10
+SPEED = 8
 LIVES = 3
 
 # Configuracoes do grafico
