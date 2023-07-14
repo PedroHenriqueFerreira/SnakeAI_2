@@ -17,7 +17,7 @@ BEST_GAME_SIZE = 460
 # Configuracoes do jogo
 GAME_SIZE = 150
 GAME_GRID = 20
-SPEED = 8
+SPEED = 5
 LIVES = 3
 
 # Configuracoes do grafico
@@ -29,8 +29,8 @@ LINE_WIDTH = 2
 PADDING = 8
 
 # Configuracoes da rede neural
-INPUT_SIZE = 16
-HIDDEN_SIZES = [10, 10]
+INPUT_SIZE = 8
+HIDDEN_SIZES = [6, 6]
 OUTPUT_SIZE = 4
 
 # Configuracoes do texto

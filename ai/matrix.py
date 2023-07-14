@@ -1,4 +1,4 @@
-from random import random, randint
+from random import random, randint, gauss
 
 class Matrix:
     ''' Classe que representa uma matriz '''
@@ -39,7 +39,9 @@ class Matrix:
                 if random() > mutation_rate:
                     continue
                 
-                row[i] += max(-1, min(1, (random() * 2) - 1))
+                new_val = row[i] + gauss() / 5 
+                
+                row[i] = max(-1, min(1, new_val))
     
     def clone(self):
         ''' Cria uma cópia da matriz '''
